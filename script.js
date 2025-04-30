@@ -1,64 +1,108 @@
 const questions = [
-    { q: "What does CPU stand for?", a: "central processing unit", points: 2 },
-    { q: "What does GPU stand for?", a: "graphics processing unit", points: 2 },
-    { q: "What does RAM stand for?", a: "random access memory", points: 2 },
-    { q: "What does PSU stand for?", a: "power supply", points: 2 },
-    { q: "Which key on the keyboard is used to capitalize letters?", a: ["shift", "capslock"], points: 2 },
-    { q: "Is ten greater than 20?", a: "no", points: 1 },
-    { q: "What does IDE stand for?", a: "integrated development environment", points: 2 },
-    { q: "In which year was the Python 3.0 version developed?", a: "2008", points: 3 },
-    { q: "What does FPS stand for?", a: "frames per second", points: 2 },
-    { q: "What does Mbps stand for?", a: "megabits per second", points: 2 },
-    { q: "What does HTML stand for?", a: "hypertext markup language", points: 2 },
-    { q: "What does CSS stand for?", a: "cascading style sheets", points: 2 },
-    { q: "What does HTTP stand for?", a: "hypertext transfer protocol", points: 2 },
-    { q: "What does SQL stand for?", a: "structured query language", points: 2 },
-    { q: "What does API stand for?", a: "application programming interface", points: 2 },
-  ];
-  
-  let current = 0;
-  let score = 0;
-  
-  const questionText = document.getElementById("question-text");
-  const answerInput = document.getElementById("answer-input");
-  const finalScore = document.getElementById("final-score");
-  
-  function loadQuestion() {
-    if (current < questions.length) {
-      questionText.textContent = questions[current].q;
-      answerInput.value = "";
-    } else {
-      document.getElementById("quiz-box").style.display = "none";
-      document.getElementById("result-box").style.display = "block";
-      finalScore.textContent = `${score} out of 30`;
+  { q: "What does CPU stand for?", a: "central processing unit", points: 2, type: "text" },
+  { q: "Which key capitalizes letters?", a: ["shift", "capslock"], points: 2, type: "text" },
+  { q: "What does HTML stand for?", a: "hypertext markup language", points: 2, type: "text" },
+  {
+    q: "What does GPU stand for?",
+    a: "graphics processing unit",
+    choices: ["graphical processing unit", "graphics processor unit", "graphics processing unit", "graphic performance unit"],
+    points: 2,
+    type: "mcq"
+  },
+  {
+    q: "Is ten greater than 20?",
+    a: "no",
+    choices: ["yes", "no"],
+    points: 1,
+    type: "mcq"
+  }
+];
+
+let current = 0;
+let score = 0;
+let timer;
+let timeLeft = 10;
+
+const questionText = document.getElementById("question-text");
+const answerInput = document.getElementById("answer-input");
+const finalScore = document.getElementById("final-score");
+const quizBox = document.getElementById("quiz-box");
+const resultBox = document.getElementById("result-box");
+
+const timerDisplay = document.createElement("p");
+timerDisplay.id = "timer";
+quizBox.insertBefore(timerDisplay, answerInput);
+
+function startTimer() {
+  timeLeft = 10;
+  timerDisplay.textContent = `⏳ Time left: ${timeLeft}s`;
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    timerDisplay.textContent = `⏳ Time left: ${timeLeft}s`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      submitAnswer(true);
     }
+  }, 1000);
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  questionText.textContent = q.q;
+  answerInput.style.display = "none";
+
+  // Clear previous MCQs if any
+  const existingMCQs = document.querySelectorAll(".mcq-option");
+  existingMCQs.forEach(el => el.remove());
+
+  if (q.type === "text") {
+    answerInput.style.display = "block";
+    answerInput.value = "";
+  } else if (q.type === "mcq") {
+    q.choices.forEach(choice => {
+      const btn = document.createElement("button");
+      btn.className = "mcq-option";
+      btn.textContent = choice;
+      btn.onclick = () => {
+        answerInput.value = choice;
+        submitAnswer();
+      };
+      quizBox.insertBefore(btn, timerDisplay);
+    });
   }
-  
-  function submitAnswer() {
-    let userAnswer = answerInput.value.trim().toLowerCase();
-    let correct = questions[current].a;
-    
-    if (Array.isArray(correct)) {
-      if (correct.includes(userAnswer)) {
-        score += questions[current].points;
-      }
-    } else {
-      if (userAnswer === correct) {
-        score += questions[current].points;
-      }
-    }
-  
-    current++;
+
+  startTimer();
+}
+
+function submitAnswer(auto = false) {
+  clearInterval(timer);
+
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  const correct = questions[current].a;
+
+  if (Array.isArray(correct)) {
+    if (correct.includes(userAnswer)) score += questions[current].points;
+  } else {
+    if (userAnswer === correct) score += questions[current].points;
+  }
+
+  current++;
+  if (current < questions.length) {
     loadQuestion();
+  } else {
+    quizBox.style.display = "none";
+    resultBox.style.display = "block";
+    finalScore.textContent = `${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
   }
-  
-  function restartQuiz() {
-    current = 0;
-    score = 0;
-    document.getElementById("quiz-box").style.display = "block";
-    document.getElementById("result-box").style.display = "none";
-    loadQuestion();
-  }
-  
-  window.onload = loadQuestion;
-  
+}
+
+function restartQuiz() {
+  current = 0;
+  score = 0;
+  quizBox.style.display = "block";
+  resultBox.style.display = "none";
+  loadQuestion();
+}
+
+window.onload = loadQuestion;
