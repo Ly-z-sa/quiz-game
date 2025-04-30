@@ -1,45 +1,72 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Game</title>
-  <link rel="stylesheet" href="style.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    #progress-bar {
+      height: 10px;
+      background: green;
+      width: 0%;
+    }
+    .fade {
+      animation: fadeIn 0.5s;
+    }
+    @keyframes fadeIn {
+      from {opacity: 0;}
+      to {opacity: 1;}
+    }
+  </style>
 </head>
 <body>
-  <div class="container">
-    <h1 class="title">💡 Tech Quiz Game</h1>
-
-    <!-- Progress Bar -->
-    <div class="progress-container">
-      <div id="progress-bar"></div>
-    </div>
-
-    <!-- Quiz Box -->
-    <div id="quiz-box" class="card">
-      <p id="question-text"></p>
-      <input type="text" id="answer-input" placeholder="Type your answer..." autocomplete="off" />
-      <p id="timer"></p>
-      <button onclick="submitAnswer()">Submit</button>
-    </div>
-
-    <!-- Result Box -->
-    <div id="result-box" class="card" style="display:none;">
-      <h2>Thank you bestie for playing!!! Your Score:</h2>
-      <p id="final-score"></p>
-      <button onclick="restartQuiz()">Play Again</button>
-    </div>
+  <!-- Name Input -->
+  <div id="name-box">
+    <h2>Welcome!</h2>
+    <input type="text" id="username" placeholder="Enter your name" />
+    <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
-  <footer>
-    <p>Made with 💙 for fun by Lyssa!</p>
-  </footer>
+  <!-- Quiz Box -->
+  <div id="quiz-box" style="display:none;">
+    <div id="progress-bar"></div>
+    <p id="question-text"></p>
+    <input type="text" id="answer-input" placeholder="Type your answer..." />
+    <div id="timer"></div>
+  </div>
 
-  <!-- Optional Sound Effects -->
-  <audio id="correct-sound" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
-  <audio id="wrong-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
+  <!-- Result Box -->
+  <div id="result-box" style="display:none;">
+    <h2>Quiz Complete!</h2>
+    <p id="final-score"></p>
+    <button onclick="restartQuiz()">Restart Quiz</button>
+    <button onclick="showProgress()">Show My Progress</button>
+    <button onclick="openFeedback()">Give Feedback</button>
+  </div>
 
-  <script src="script.js"></script>
+  <!-- Feedback Box with FormSubmit -->
+  <div id="feedback-box" style="display:none;">
+    <h2>Feedback</h2>
+    <form id="feedback-form" action="https://formsubmit.co/lyssa.phat@gmail.com" method="POST">
+      <textarea name="feedback" placeholder="What would you like in future quizzes?" required rows="5" cols="30"></textarea><br />
+      <input type="hidden" name="_subject" value="New Quiz Feedback!">
+      <input type="hidden" name="_template" value="table">
+      <input type="hidden" name="user" id="feedback-user" value="">
+      <button type="submit">Submit</button>
+      <button type="button" onclick="closeFeedback()">Close</button>
+    </form>
+  </div>
+
+  <!-- Progress Box -->
+  <div id="progress-box" style="display:none;">
+    <h2>Past Scores</h2>
+    <ul id="progress-list"></ul>
+    <button onclick="closeProgress()">Close</button>
+  </div>
+
+  <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
+  <audio id="wrong-sound" src="wrong.mp3" preload="auto"></audio>
+
+  <script src="quiz.js"></script>
 </body>
 </html>
