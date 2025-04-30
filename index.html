@@ -10,23 +10,35 @@
 <body>
   <div class="container">
     <h1 class="title">💡 Tech Quiz Game</h1>
-    
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+      <div id="progress-bar"></div>
+    </div>
+
+    <!-- Quiz Box -->
     <div id="quiz-box" class="card">
       <p id="question-text"></p>
       <input type="text" id="answer-input" placeholder="Type your answer..." autocomplete="off" />
+      <p id="timer"></p>
       <button onclick="submitAnswer()">Submit</button>
     </div>
 
+    <!-- Result Box -->
     <div id="result-box" class="card" style="display:none;">
       <h2>Your Score:</h2>
       <p id="final-score"></p>
       <button onclick="restartQuiz()">Play Again</button>
     </div>
   </div>
-  
+
   <footer>
     <p>Made with 💻 for fun!</p>
   </footer>
+
+  <!-- Optional Sound Effects -->
+  <audio id="correct-sound" src="https://www.myinstants.com/media/sounds/correct-answer.mp3"></audio>
+  <audio id="wrong-sound" src="https://www.myinstants.com/media/sounds/wrong-answer-sound-effect.mp3"></audio>
 
   <script src="script.js"></script>
 </body>
