@@ -4,40 +4,30 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Game</title>
-  <style>
-    #progress-bar {
-      height: 10px;
-      background: green;
-      width: 0%;
-    }
-    .fade {
-      animation: fadeIn 0.5s;
-    }
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-  </style>
+  <!-- Link to the external CSS file -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <!-- Name Input -->
-  <div id="name-box">
-    <h2>Welcome!</h2>
-    <input type="text" id="username" placeholder="Enter your name" />
+  <div id="name-box" class="container">
+    <h2 class="title">Welcome!</h2>
+    <input type="text" id="username" class="input-field" placeholder="Enter your name" />
     <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
   <!-- Quiz Box -->
-  <div id="quiz-box" style="display:none;">
-    <div id="progress-bar"></div>
+  <div id="quiz-box" class="container" style="display:none;">
+    <div class="progress-container">
+      <div id="progress-bar"></div>
+    </div>
     <p id="question-text"></p>
-    <input type="text" id="answer-input" placeholder="Type your answer..." />
+    <input type="text" id="answer-input" class="input-field" placeholder="Type your answer..." />
     <div id="timer"></div>
   </div>
 
   <!-- Result Box -->
-  <div id="result-box" style="display:none;">
-    <h2>Quiz Complete!</h2>
+  <div id="result-box" class="container" style="display:none;">
+    <h2 class="title">Quiz Complete!</h2>
     <p id="final-score"></p>
     <button onclick="restartQuiz()">Restart Quiz</button>
     <button onclick="showProgress()">Show My Progress</button>
@@ -45,10 +35,10 @@
   </div>
 
   <!-- Feedback Box with FormSubmit -->
-  <div id="feedback-box" style="display:none;">
-    <h2>Feedback</h2>
+  <div id="feedback-box" class="container" style="display:none;">
+    <h2 class="title">Feedback</h2>
     <form id="feedback-form" action="https://formsubmit.co/lyssa.phat@gmail.com" method="POST">
-      <textarea name="feedback" placeholder="What would you like in future quizzes?" required rows="5" cols="30"></textarea><br />
+      <textarea name="feedback" id="feedback-text" placeholder="What would you like in future quizzes?" required rows="5"></textarea><br />
       <input type="hidden" name="_subject" value="New Quiz Feedback!">
       <input type="hidden" name="_template" value="table">
       <input type="hidden" name="user" id="feedback-user" value="">
@@ -58,15 +48,17 @@
   </div>
 
   <!-- Progress Box -->
-  <div id="progress-box" style="display:none;">
-    <h2>Past Scores</h2>
+  <div id="progress-box" class="container" style="display:none;">
+    <h2 class="title">Past Scores</h2>
     <ul id="progress-list"></ul>
     <button onclick="closeProgress()">Close</button>
   </div>
 
+  <!-- Audio for Correct and Wrong Answers -->
   <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
   <audio id="wrong-sound" src="wrong.mp3" preload="auto"></audio>
 
+  <!-- Link to the JavaScript file -->
   <script src="script.js"></script>
 </body>
 </html>
