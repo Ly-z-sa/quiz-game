@@ -5,23 +5,25 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Quiz Game</title>
   <!-- Link to the external CSS file -->
-  <link rel="stylesheet" href="style.css">
+  <link rel="stylesheet" href="style1.css">
 </head>
 <body>
   <!-- Name Input -->
   <div id="name-box" class="container">
-    <h2 class="title">Welcome!</h2>
+    <h2 class="title">Welcome to the Quiz Game!</h2>
     <input type="text" id="username" class="input-field" placeholder="Enter your name" />
     <button onclick="startQuiz()">Start Quiz</button>
   </div>
 
   <!-- Quiz Box -->
   <div id="quiz-box" class="container" style="display:none;">
+    <h2 class="title">Answer the Question</h2>
     <div class="progress-container">
       <div id="progress-bar"></div>
     </div>
     <p id="question-text"></p>
-    <input type="text" id="answer-input" class="input-field" placeholder="Type your answer..." />
+    <input type="text" id="answer-input" class="input-field" placeholder="Type your answer..." onkeypress="handleEnter(event)" />
+    <button id="submit-button" onclick="submitAnswer()">Submit</button>
     <div id="timer"></div>
   </div>
 
@@ -57,6 +59,11 @@
   <!-- Audio for Correct and Wrong Answers -->
   <audio id="correct-sound" src="correct.mp3" preload="auto"></audio>
   <audio id="wrong-sound" src="wrong.mp3" preload="auto"></audio>
+
+  <!-- Footer -->
+  <footer>
+    Made with 💙 by Lyssa
+  </footer>
 
   <!-- Link to the JavaScript file -->
   <script src="script.js"></script>
