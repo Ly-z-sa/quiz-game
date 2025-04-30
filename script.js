@@ -28,10 +28,11 @@ const answerInput = document.getElementById("answer-input");
 const finalScore = document.getElementById("final-score");
 const quizBox = document.getElementById("quiz-box");
 const resultBox = document.getElementById("result-box");
+const timerDisplay = document.getElementById("timer");
+const progressBar = document.getElementById("progress-bar");
 
-const timerDisplay = document.createElement("p");
-timerDisplay.id = "timer";
-quizBox.insertBefore(timerDisplay, answerInput);
+const correctSound = document.getElementById("correct-sound");
+const wrongSound = document.getElementById("wrong-sound");
 
 function startTimer() {
   timeLeft = 10;
@@ -47,10 +48,20 @@ function startTimer() {
   }, 1000);
 }
 
+function updateProgressBar() {
+  const percent = (current / questions.length) * 100;
+  progressBar.style.width = `${percent}%`;
+}
+
 function loadQuestion() {
   const q = questions[current];
   questionText.textContent = q.q;
   answerInput.style.display = "none";
+
+  // Fade animation
+  quizBox.classList.remove("fade");
+  void quizBox.offsetWidth; // trigger reflow
+  quizBox.classList.add("fade");
 
   // Clear previous MCQs if any
   const existingMCQs = document.querySelectorAll(".mcq-option");
@@ -73,24 +84,33 @@ function loadQuestion() {
   }
 
   startTimer();
+  updateProgressBar();
 }
 
 function submitAnswer(auto = false) {
   clearInterval(timer);
-
   const userAnswer = answerInput.value.trim().toLowerCase();
   const correct = questions[current].a;
+  let isCorrect = false;
 
   if (Array.isArray(correct)) {
-    if (correct.includes(userAnswer)) score += questions[current].points;
+    isCorrect = correct.includes(userAnswer);
   } else {
-    if (userAnswer === correct) score += questions[current].points;
+    isCorrect = userAnswer === correct;
+  }
+
+  if (isCorrect) {
+    score += questions[current].points;
+    correctSound?.play();
+  } else {
+    wrongSound?.play();
   }
 
   current++;
   if (current < questions.length) {
     loadQuestion();
   } else {
+    progressBar.style.width = `100%`;
     quizBox.style.display = "none";
     resultBox.style.display = "block";
     finalScore.textContent = `${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
@@ -105,4 +125,7 @@ function restartQuiz() {
   loadQuestion();
 }
 
-window.onload = loadQuestion;
+window.onload = () => {
+  loadQuestion();
+  updateProgressBar();
+};
