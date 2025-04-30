@@ -15,6 +15,58 @@ const questions = [
     choices: ["yes", "no"],
     points: 1,
     type: "mcq"
+  },
+  {
+    q: "Which programming language is known for web development?",
+    a: "javascript",
+    choices: ["python", "java", "javascript", "c++"],
+    points: 2,
+    type: "mcq"
+  },
+  {
+    q: "What does URL stand for?",
+    a: "uniform resource locator",
+    points: 2,
+    type: "text"
+  },
+  {
+    q: "What does RAM stand for?",
+    a: "random access memory",
+    points: 2,
+    type: "text"
+  },
+  {
+    q: "Which of these is an operating system?",
+    a: "windows",
+    choices: ["linux", "macos", "windows", "android"],
+    points: 2,
+    type: "mcq"
+  },
+  {
+    q: "Is HTML a programming language?",
+    a: "no",
+    choices: ["yes", "no"],
+    points: 1,
+    type: "mcq"
+  },
+  {
+    q: "What is the most common type of computer storage used today?",
+    a: "ssd",
+    choices: ["hdd", "ssd", "floppy disk", "tape drive"],
+    points: 2,
+    type: "mcq"
+  },
+  {
+    q: "Which key is used to open the start menu on Windows?",
+    a: "windows",
+    points: 1,
+    type: "text"
+  },
+  {
+    q: "Who invented the World Wide Web?",
+    a: "tim berners-lee",
+    points: 2,
+    type: "text"
   }
 ];
 
@@ -58,12 +110,10 @@ function loadQuestion() {
   questionText.textContent = q.q;
   answerInput.style.display = "none";
 
-  // Fade animation
   quizBox.classList.remove("fade");
-  void quizBox.offsetWidth; // trigger reflow
+  void quizBox.offsetWidth;
   quizBox.classList.add("fade");
 
-  // Clear previous MCQs if any
   const existingMCQs = document.querySelectorAll(".mcq-option");
   existingMCQs.forEach(el => el.remove());
 
