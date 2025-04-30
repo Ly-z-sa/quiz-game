@@ -107,11 +107,12 @@ const questions = [
   
   function startTimer() {
     timeLeft = 10;
-    timerDisplay.textContent = `⏳ Time left: ${timeLeft}s`;
+    const timerBar = document.getElementById("timer-bar");
+    timerBar.style.width = "100%";
     clearInterval(timer);
     timer = setInterval(() => {
       timeLeft--;
-      timerDisplay.textContent = `⏳ Time left: ${timeLeft}s`;
+      timerBar.style.width = `${(timeLeft / 10) * 100}%`;
       if (timeLeft <= 0) {
         clearInterval(timer);
         submitAnswer(true);
@@ -159,14 +160,14 @@ const questions = [
     const userAnswer = answerInput.value.trim().toLowerCase();
     const correct = questions[current].a;
     const isCorrect = Array.isArray(correct) ? correct.includes(userAnswer) : userAnswer === correct;
-  
+
     if (isCorrect) {
       score += questions[current].points;
-      correctSound?.play();
+      correctSound?.play(); // Play correct sound
     } else {
-      wrongSound?.play();
+      wrongSound?.play(); // Play wrong sound
     }
-  
+
     current++;
     if (current < questions.length) {
       loadQuestion();
@@ -174,7 +175,7 @@ const questions = [
       progressBar.style.width = `100%`;
       quizBox.style.display = "none";
       resultBox.style.display = "block";
-      finalScore.textContent = `${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
+      finalScore.textContent = `Here's your result, ${user}: ${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
       saveProgress();
     }
   }
