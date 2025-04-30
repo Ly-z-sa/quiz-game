@@ -127,7 +127,8 @@ function updateProgressBar() {
 function loadQuestion() {
   const q = questions[current];
   questionText.textContent = q.q;
-  answerInput.style.display = "none";
+  answerInput.style.display = q.type === "text" ? "block" : "none";
+  answerInput.value = "";
 
   quizBox.classList.remove("fade");
   void quizBox.offsetWidth;
@@ -136,10 +137,7 @@ function loadQuestion() {
   const existingMCQs = document.querySelectorAll(".mcq-option");
   existingMCQs.forEach(el => el.remove());
 
-  if (q.type === "text") {
-    answerInput.style.display = "block";
-    answerInput.value = "";
-  } else if (q.type === "mcq") {
+  if (q.type === "mcq") {
     q.choices.forEach(choice => {
       const btn = document.createElement("button");
       btn.className = "mcq-option";
@@ -160,13 +158,7 @@ function submitAnswer(auto = false) {
   clearInterval(timer);
   const userAnswer = answerInput.value.trim().toLowerCase();
   const correct = questions[current].a;
-  let isCorrect = false;
-
-  if (Array.isArray(correct)) {
-    isCorrect = correct.includes(userAnswer);
-  } else {
-    isCorrect = userAnswer === correct;
-  }
+  const isCorrect = Array.isArray(correct) ? correct.includes(userAnswer) : userAnswer === correct;
 
   if (isCorrect) {
     score += questions[current].points;
