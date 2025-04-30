@@ -156,33 +156,34 @@ function loadQuestion() {
   answerInput.addEventListener("keypress", handleEnter);
 
   startTimer();
-  updateProgressBar();
+  updateProgressBar(); // Update progress bar here
 }
   
   function submitAnswer(auto = false) {
-    clearInterval(timer);
-    const userAnswer = answerInput.value.trim().toLowerCase();
-    const correct = questions[current].a;
-    const isCorrect = Array.isArray(correct) ? correct.includes(userAnswer) : userAnswer === correct;
+  clearInterval(timer);
+  const userAnswer = answerInput.value.trim().toLowerCase();
+  const correct = questions[current].a;
+  const isCorrect = Array.isArray(correct) ? correct.includes(userAnswer) : userAnswer === correct;
 
-    if (isCorrect) {
-      score += questions[current].points;
-      correctSound?.play(); // Play correct sound
-    } else {
-      wrongSound?.play(); // Play wrong sound
-    }
-
-    current++;
-    if (current < questions.length) {
-      loadQuestion();
-    } else {
-      progressBar.style.width = `100%`;
-      quizBox.style.display = "none";
-      resultBox.style.display = "block";
-      finalScore.textContent = `Here's your result, ${user}: ${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
-      saveProgress();
-    }
+  if (isCorrect) {
+    score += questions[current].points;
+    correctSound?.play(); // Play correct sound
+  } else {
+    wrongSound?.play(); // Play wrong sound
   }
+
+  current++;
+  if (current < questions.length) {
+    loadQuestion();
+  } else {
+    progressBar.style.width = `100%`; // Ensure progress bar is full at the end
+    quizBox.style.display = "none";
+    resultBox.style.display = "block";
+    finalScore.textContent = `Here's your result, ${user}: ${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
+    saveProgress();
+  }
+  updateProgressBar(); // Update progress bar after submitting an answer
+}
   
   function saveProgress() {
     const past = JSON.parse(localStorage.getItem("quizProgress") || "[]");
@@ -227,6 +228,12 @@ function loadQuestion() {
     resultBox.style.display = "block";
   }
   
+  function updateProgressBar() {
+    const progressBar = document.getElementById("progress-bar");
+    const progress = ((current + 1) / questions.length) * 100; // Calculate progress percentage
+    progressBar.style.width = `${progress}%`; // Update progress bar width
+}
+
   window.onload = () => {
     if (localStorage.getItem("quizUser")) {
       user = localStorage.getItem("quizUser");
