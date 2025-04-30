@@ -1,4 +1,79 @@
-const questions = [/* same questions as before */];
+const questions = [
+  { q: "What does CPU stand for?", a: "central processing unit", points: 2, type: "text" },
+  { q: "Which key capitalizes letters?", a: ["shift", "capslock"], points: 2, type: "text" },
+  { q: "What does HTML stand for?", a: "hypertext markup language", points: 2, type: "text" },
+  {
+    q: "What does GPU stand for?",
+    a: "graphics processing unit",
+    choices: ["graphical processing unit", "graphics processor unit", "graphics processing unit", "graphic performance unit"],
+    points: 2,
+    type: "mcq"
+  },
+  {
+    q: "Is ten greater than 20?",
+    a: "no",
+    choices: ["yes", "no"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "What is the capital of France?", a: "paris", points: 1, type: "text" },
+  {
+    q: "Which one is a programming language?",
+    a: "javascript",
+    choices: ["html", "css", "javascript", "photoshop"],
+    points: 2,
+    type: "mcq"
+  },
+  { q: "What number comes after 99?", a: "100", points: 1, type: "text" },
+  {
+    q: "Which of these is a fruit?",
+    a: "banana",
+    choices: ["carrot", "broccoli", "banana", "potato"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "What does RAM stand for?", a: "random access memory", points: 2, type: "text" },
+  {
+    q: "Which animal is known as man's best friend?",
+    a: "dog",
+    choices: ["cat", "dog", "horse", "parrot"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "What does URL stand for?", a: "uniform resource locator", points: 2, type: "text" },
+  {
+    q: "Which planet is known as the Red Planet?",
+    a: "mars",
+    choices: ["earth", "mars", "jupiter", "venus"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "How many continents are there?", a: "7", points: 1, type: "text" },
+  {
+    q: "Which language is primarily used for styling web pages?",
+    a: "css",
+    choices: ["html", "css", "javascript", "python"],
+    points: 2,
+    type: "mcq"
+  },
+  { q: "What is the boiling point of water in Celsius?", a: "100", points: 1, type: "text" },
+  {
+    q: "Which gas do plants use to make food?",
+    a: "carbon dioxide",
+    choices: ["oxygen", "hydrogen", "carbon dioxide", "nitrogen"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "What is 9 multiplied by 6?", a: "54", points: 1, type: "text" },
+  {
+    q: "Which is the largest ocean on Earth?",
+    a: "pacific",
+    choices: ["atlantic", "indian", "arctic", "pacific"],
+    points: 1,
+    type: "mcq"
+  },
+  { q: "What is the chemical symbol for water?", a: "h2o", points: 1, type: "text" }
+];
 
 let current = 0;
 let score = 0;
@@ -17,17 +92,17 @@ const correctSound = document.getElementById("correct-sound");
 const wrongSound = document.getElementById("wrong-sound");
 
 function startQuiz() {
-  const usernameInput = document.getElementById("username");
-  user = usernameInput.value.trim();
+  user = document.getElementById("username").value.trim();
   if (!user) {
-    alert("Please enter your name.");
+    alert("Please enter your name first.");
     return;
   }
+  localStorage.setItem("quizUser", user);
+  document.getElementById("feedback-user").value = user;
 
   document.getElementById("name-box").style.display = "none";
   quizBox.style.display = "block";
   loadQuestion();
-  updateProgressBar();
 }
 
 function startTimer() {
@@ -58,7 +133,8 @@ function loadQuestion() {
   void quizBox.offsetWidth;
   quizBox.classList.add("fade");
 
-  document.querySelectorAll(".mcq-option").forEach(el => el.remove());
+  const existingMCQs = document.querySelectorAll(".mcq-option");
+  existingMCQs.forEach(el => el.remove());
 
   if (q.type === "text") {
     answerInput.style.display = "block";
@@ -84,7 +160,13 @@ function submitAnswer(auto = false) {
   clearInterval(timer);
   const userAnswer = answerInput.value.trim().toLowerCase();
   const correct = questions[current].a;
-  let isCorrect = Array.isArray(correct) ? correct.includes(userAnswer) : userAnswer === correct;
+  let isCorrect = false;
+
+  if (Array.isArray(correct)) {
+    isCorrect = correct.includes(userAnswer);
+  } else {
+    isCorrect = userAnswer === correct;
+  }
 
   if (isCorrect) {
     score += questions[current].points;
@@ -97,13 +179,18 @@ function submitAnswer(auto = false) {
   if (current < questions.length) {
     loadQuestion();
   } else {
+    progressBar.style.width = `100%`;
     quizBox.style.display = "none";
     resultBox.style.display = "block";
-    progressBar.style.width = "100%";
-    const total = questions.reduce((sum, q) => sum + q.points, 0);
-    finalScore.textContent = `${user}, you scored ${score} out of ${total}`;
-    saveProgress(user, score, total);
+    finalScore.textContent = `${score} out of ${questions.reduce((a, q) => a + q.points, 0)}`;
+    saveProgress();
   }
+}
+
+function saveProgress() {
+  const past = JSON.parse(localStorage.getItem("quizProgress") || "[]");
+  past.push({ user, score, date: new Date().toLocaleString() });
+  localStorage.setItem("quizProgress", JSON.stringify(past));
 }
 
 function restartQuiz() {
@@ -114,28 +201,16 @@ function restartQuiz() {
   loadQuestion();
 }
 
-function saveProgress(name, score, total) {
-  const progress = JSON.parse(localStorage.getItem("quizProgress") || "[]");
-  progress.push({ name, score, total, date: new Date().toLocaleString() });
-  localStorage.setItem("quizProgress", JSON.stringify(progress));
-}
-
 function showProgress() {
   resultBox.style.display = "none";
-  const progress = JSON.parse(localStorage.getItem("quizProgress") || "[]");
   const list = document.getElementById("progress-list");
   list.innerHTML = "";
-
-  if (progress.length === 0) {
-    list.innerHTML = "<li>No progress recorded yet.</li>";
-  } else {
-    progress.forEach(entry => {
-      const item = document.createElement("li");
-      item.textContent = `${entry.name} scored ${entry.score}/${entry.total} on ${entry.date}`;
-      list.appendChild(item);
-    });
-  }
-
+  const past = JSON.parse(localStorage.getItem("quizProgress") || "[]");
+  past.filter(p => p.user === user).forEach(entry => {
+    const li = document.createElement("li");
+    li.textContent = `${entry.date}: ${entry.score}`;
+    list.appendChild(li);
+  });
   document.getElementById("progress-box").style.display = "block";
 }
 
@@ -145,8 +220,9 @@ function closeProgress() {
 }
 
 function openFeedback() {
-  document.getElementById("feedback-box").style.display = "block";
   resultBox.style.display = "none";
+  document.getElementById("feedback-user").value = user;
+  document.getElementById("feedback-box").style.display = "block";
 }
 
 function closeFeedback() {
@@ -154,20 +230,9 @@ function closeFeedback() {
   resultBox.style.display = "block";
 }
 
-function submitFeedback() {
-  const text = document.getElementById("feedback-text").value.trim();
-  if (!text) {
-    alert("Please write something!");
-    return;
-  }
-  const feedback = JSON.parse(localStorage.getItem("quizFeedback") || "[]");
-  feedback.push({ user, text, date: new Date().toLocaleString() });
-  localStorage.setItem("quizFeedback", JSON.stringify(feedback));
-  alert("Thanks for your feedback!");
-  document.getElementById("feedback-text").value = "";
-  closeFeedback();
-}
-
 window.onload = () => {
-  // Wait for user name before starting
+  if (localStorage.getItem("quizUser")) {
+    user = localStorage.getItem("quizUser");
+    document.getElementById("feedback-user").value = user;
+  }
 };
