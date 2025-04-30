@@ -106,54 +106,58 @@ const questions = [
   }
   
   function startTimer() {
-    timeLeft = 10;
-    const timerBar = document.getElementById("timer-bar");
-    timerBar.style.width = "100%";
-    clearInterval(timer);
-    timer = setInterval(() => {
-      timeLeft--;
-      timerBar.style.width = `${(timeLeft / 10) * 100}%`;
-      if (timeLeft <= 0) {
-        clearInterval(timer);
-        submitAnswer(true);
-      }
-    }, 1000);
-  }
-  
-  function updateProgressBar() {
-    const percent = (current / questions.length) * 100;
-    progressBar.style.width = `${percent}%`;
-  }
-  
-  function loadQuestion() {
-    const q = questions[current];
-    questionText.textContent = q.q;
-    answerInput.style.display = q.type === "text" ? "block" : "none";
-    answerInput.value = "";
-  
-    quizBox.classList.remove("fade");
-    void quizBox.offsetWidth;
-    quizBox.classList.add("fade");
-  
-    const existingMCQs = document.querySelectorAll(".mcq-option");
-    existingMCQs.forEach(el => el.remove());
-  
-    if (q.type === "mcq") {
-      q.choices.forEach(choice => {
-        const btn = document.createElement("button");
-        btn.className = "mcq-option";
-        btn.textContent = choice;
-        btn.onclick = () => {
-          answerInput.value = choice;
-          submitAnswer();
-        };
-        quizBox.insertBefore(btn, timerDisplay);
-      });
+  timeLeft = 10;
+  const timerBar = document.getElementById("timer-bar");
+  timerBar.style.width = "100%";
+  clearInterval(timer);
+  timer = setInterval(() => {
+    timeLeft--;
+    timerBar.style.width = `${(timeLeft / 10) * 100}%`;
+    if (timeLeft <= 0) {
+      clearInterval(timer);
+      submitAnswer(true); // Auto-submit when time runs out
     }
-  
-    startTimer();
-    updateProgressBar();
+  }, 1000);
+}
+
+function handleEnter(event) {
+  if (event.key === "Enter") {
+    event.preventDefault(); // Prevent default form submission
+    document.getElementById("submit-button").click();
   }
+}
+
+function loadQuestion() {
+  const q = questions[current];
+  questionText.textContent = q.q;
+  answerInput.style.display = q.type === "text" ? "block" : "none";
+  answerInput.value = "";
+
+  // Remove existing MCQ options
+  const existingMCQs = document.querySelectorAll(".mcq-option");
+  existingMCQs.forEach(el => el.remove());
+
+  // Add MCQ options if applicable
+  if (q.type === "mcq") {
+    q.choices.forEach(choice => {
+      const btn = document.createElement("button");
+      btn.className = "mcq-option";
+      btn.textContent = choice;
+      btn.onclick = () => {
+        answerInput.value = choice;
+        submitAnswer();
+      };
+      quizBox.insertBefore(btn, document.getElementById("timer-bar-container"));
+    });
+  }
+
+  // Reattach "keypress" event listener for the "Enter" key
+  answerInput.removeEventListener("keypress", handleEnter);
+  answerInput.addEventListener("keypress", handleEnter);
+
+  startTimer();
+  updateProgressBar();
+}
   
   function submitAnswer(auto = false) {
     clearInterval(timer);
@@ -221,12 +225,6 @@ const questions = [
   function closeFeedback() {
     document.getElementById("feedback-box").style.display = "none";
     resultBox.style.display = "block";
-  }
-  
-  function handleEnter(event) {
-    if (event.key === "Enter") {
-      document.getElementById("submit-button").click();
-    }
   }
   
   window.onload = () => {
