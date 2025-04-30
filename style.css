@@ -11,23 +11,27 @@ body {
   color: #fff;
   min-height: 100vh;
   display: flex;
-  flex-direction: column;
   justify-content: center;
   align-items: center;
+  flex-direction: column;
   padding: 20px;
 }
 
 /* Container */
 .container {
   width: 100%;
-  max-width: 600px;
+  max-width: 800px;
   text-align: center;
+  background-color: rgba(0, 0, 0, 0.5);
+  border-radius: 12px;
+  padding: 30px;
 }
 
 /* Title */
 .title {
   font-size: 2.5rem;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
+  color: #ffcc00;
 }
 
 /* Quiz & Result Cards */
@@ -35,15 +39,16 @@ body {
   background: rgba(255, 255, 255, 0.08);
   backdrop-filter: blur(12px);
   border-radius: 16px;
-  padding: 30px;
+  padding: 40px;
   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.25);
   transition: all 0.3s ease-in-out;
 }
 
 /* Question text */
 #question-text {
-  font-size: 1.3rem;
+  font-size: 1.5rem;
   margin-bottom: 20px;
+  font-weight: bold;
 }
 
 /* Answer input */
@@ -54,6 +59,8 @@ body {
   border-radius: 8px;
   font-size: 1rem;
   margin-bottom: 20px;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: #fff;
 }
 
 /* Buttons */
@@ -67,10 +74,16 @@ button {
   cursor: pointer;
   font-weight: 600;
   transition: background-color 0.2s ease;
+  margin-top: 10px;
+  width: 100%;
 }
 
 button:hover {
   background-color: #ffaa00;
+}
+
+button:active {
+  background-color: #e69900;
 }
 
 /* Timer */
@@ -85,13 +98,13 @@ button:hover {
   display: block;
   background-color: #444;
   color: #fff;
-  padding: 10px;
+  padding: 15px;
   margin: 6px auto;
   border: none;
   border-radius: 8px;
   font-size: 1rem;
   width: 100%;
-  max-width: 300px;
+  max-width: 350px;
   transition: background-color 0.2s ease;
 }
 
@@ -99,14 +112,17 @@ button:hover {
   background-color: #666;
 }
 
+.mcq-option:active {
+  background-color: #888;
+}
+
 /* Progress bar */
 .progress-container {
-  height: 10px;
+  height: 12px;
   width: 100%;
   background: #fff2;
   border-radius: 10px;
   margin-bottom: 20px;
-  overflow: hidden;
 }
 
 #progress-bar {
@@ -126,9 +142,58 @@ button:hover {
   to { opacity: 1; transform: translateY(0); }
 }
 
+/* Progress Box */
+#progress-box {
+  display: none;
+  width: 100%;
+  max-width: 600px;
+  background-color: rgba(255, 255, 255, 0.1);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+  margin-top: 30px;
+}
+
+#progress-box ul {
+  list-style-type: none;
+  padding-left: 0;
+}
+
+#progress-box li {
+  margin: 10px 0;
+  font-size: 1.1rem;
+  color: #fff;
+}
+
+/* Feedback Box */
+#feedback-box {
+  display: none;
+  background-color: rgba(0, 0, 0, 0.7);
+  padding: 30px;
+  border-radius: 10px;
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.3);
+}
+
+#feedback-text {
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+  font-size: 1rem;
+  background-color: rgba(255, 255, 255, 0.2);
+  color: #fff;
+}
+
+#feedback-box button {
+  background-color: #00ffcc;
+  margin-top: 10px;
+}
+
 /* Footer */
 footer {
   margin-top: 40px;
   font-size: 0.9rem;
   color: #ccc;
+  text-align: center;
+  width: 100%;
 }
