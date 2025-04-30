@@ -254,6 +254,6 @@
 #timer-bar {
   height: 100%;
   width: 100%;
-  background-color: #ff4d4d;
+  background-color: #00ffcc;
   transition: width 1s linear;
 }
